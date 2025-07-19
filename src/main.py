@@ -1,5 +1,12 @@
 import flet as ft
 import settings
+import genImage
+import Library
+import loading
+import threading
+
+def gen_img(searchBar, resDrop, page, navDrawer) -> None:
+    loading.screen(page, navDrawer, searchBar.value, resDrop.value)
 
 def screen(page: ft.Page, navDrawer):
     def on_nav_change(e):
@@ -7,6 +14,8 @@ def screen(page: ft.Page, navDrawer):
         match index:
             case 0:
                 pass  # Already on Generate
+            case 1:
+                Library.screen(page,navDrawer)
             case 2:
                 settings.screen(page, navDrawer)
 
@@ -23,7 +32,8 @@ def screen(page: ft.Page, navDrawer):
         fill_color="#2F3E40",
         hint_style=ft.TextStyle(color=ft.Colors.GREY),
         autofocus=True,
-        expand=True
+        expand=True,
+        on_submit=lambda a: gen_img(search_bar, resolutionDropdown, page, navDrawer)
     )
 
     page.clean()
@@ -37,10 +47,30 @@ def screen(page: ft.Page, navDrawer):
     )
     page.bgcolor = "#1B2729"
 
+    resolutionDropdown = ft.Dropdown(
+        label="Resolution",
+        width=250,
+        border_radius=20,
+        filled=True,
+        fill_color="#2F3E40",
+        color="#FFFFFF",
+        text_style=ft.TextStyle(color=ft.Colors.WHITE),
+        options=[
+            ft.dropdown.Option("512x512 (Fastest)"),
+            ft.dropdown.Option("1920x1080 (Full HD)"),
+            ft.dropdown.Option("2560x1440 (QHD)"),
+            ft.dropdown.Option("3840x2160 (4K UHD)"),
+            ft.dropdown.Option("1080x1920 (Mobile)"),
+        ],
+        value="512x512 (Fastest)"
+    )
+
     page.add(
     ft.Container(
+        
         expand=True,
-        alignment=ft.alignment.center,  # still fully centers layout
+        alignment=ft.alignment.center, 
+        padding=40,
         content=ft.Column(
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
             alignment=ft.MainAxisAlignment.CENTER,
@@ -63,13 +93,12 @@ def screen(page: ft.Page, navDrawer):
                             bgcolor="#2F3E40"
                             )
                         )
-                    )
+                    ),
+                    resolutionDropdown
                 ]
             )
         )
     )
-
-
 
 
 def on_nav_change(e):

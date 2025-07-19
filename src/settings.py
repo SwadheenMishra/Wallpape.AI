@@ -1,12 +1,12 @@
 import flet as ft
 import main
+import Library
 import json
 
 def fetch_API_Key(Path: str = "API_KEY/api_key.json") -> str:
     with open(Path, "r") as f:
         key_data = json.load(f)
     return key_data
-
 
 def update_api_key(new_key: str, path: str = "API_KEY/api_key.json"):
     try:
@@ -23,6 +23,8 @@ def screen(page: ft.Page, navDrawer):
         match index:
             case 0:
                 main.screen(page, navDrawer)
+            case 1:
+                Library.screen(page,navDrawer)
             case 2:
                 pass  # already on Settings
 
@@ -36,7 +38,7 @@ def screen(page: ft.Page, navDrawer):
     if (k := keyData["key"]) == "None":
         InputAPI = ft.TextField(hint_text="Enter your API key!")
     else:
-        InputAPI = ft.TextField(value=k)
+        InputAPI = ft.TextField(value=k)    
 
     page.appbar = ft.AppBar(
         title=ft.Text("Settings!"),
